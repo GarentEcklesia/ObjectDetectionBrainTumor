@@ -5,6 +5,7 @@ from PIL import Image, ImageOps
 import os
 import sys
 import io
+import tempfile 
 
 try:
     from ultralytics import YOLO
@@ -76,21 +77,46 @@ def resize_for_display(image, size=(256, 256)):
     """
     return ImageOps.pad(image, size, color='black')
 
-def extract_frame_from_video(video_file, frame_number=0):
-    """Mengekstrak frame dari file video."""
+def extract_frame_from_video(video_file, frame_number):
+    """
+    Mengekstrak frame dari file video dengan menyimpannya ke file temporer.
+    video_file adalah objek UploadedFile dari Streamlit.
+    """
+    video_path = ""
     try:
-        tfile = io.BytesIO(video_file.read())
-        cap = cv2.VideoCapture(tfile.name)
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as tmp:
+            # Tulis byte dari video yang diunggah ke file temporer
+            tmp.write(video_file.getvalue())
+            video_path = tmp.name
+            
+        cap = cv2.VideoCapture(video_path)
+        if not cap.isOpened():
+            os.unlink(video_path) # Hapus file temporer jika gagal dibuka
+            return None, 0, "Gagal membuka file video."
+
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        if total_frames == 0:
+            cap.release()
+            os.unlink(video_path)
+            return None, 0, "Video tidak memiliki frame."
+
         cap.set(cv2.CAP_PROP_POS_FRAMES, min(frame_number, total_frames - 1))
         ret, frame = cap.read()
         cap.release()
+        
+        os.unlink(video_path)
+
         if ret:
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             return Image.fromarray(frame_rgb), total_frames, None
-        return None, 0, "Could not extract frame."
+        else:
+            return None, total_frames, "Gagal mengekstrak frame yang dipilih."
+
     except Exception as e:
-        return None, 0, f"Error processing video: {str(e)}"
+        # Jika terjadi error, pastikan file temporer tetap dihapus jika ada
+        if video_path and os.path.exists(video_path):
+            os.unlink(video_path)
+        return None, 0, f"Error saat memproses video: {str(e)}"
 
 def get_prediction_style(class_name):
     """Mendapatkan kelas CSS berdasarkan nama kelas deteksi."""
@@ -136,7 +162,7 @@ def main():
             uploaded_file = st.file_uploader("Choose a brain scan image...", type=['png', 'jpg', 'jpeg'])
             if uploaded_file:
                 image_to_process = Image.open(uploaded_file)
-                st.image(image_to_process, caption="Uploaded Image.", use_column_width=True)
+                st.image(image_to_process, caption="Uploaded Image.")
                 if st.button("Analyze Uploaded Image", key="analyze_upload"):
                     clear_results()
                     st.session_state.selected_image = image_to_process
@@ -160,19 +186,22 @@ def main():
         with tab3:
             uploaded_video = st.file_uploader("Choose a brain scan video...", type=['mp4', 'mov', 'avi'])
             if uploaded_video:
-                temp_video_file = io.BytesIO(uploaded_video.getvalue())
-                _, total_frames, _ = extract_frame_from_video(temp_video_file, 0)
+                _, total_frames, error = extract_frame_from_video(uploaded_video, 0)
                 
-                if total_frames > 1:
+                if error:
+                    st.error(error)
+                elif total_frames > 0:
                     frame_number = st.slider("Select frame to analyze", 0, total_frames - 1, total_frames // 2)
-                    temp_video_file.seek(0) 
-                    image_to_process, _, _ = extract_frame_from_video(temp_video_file, frame_number)
-                
-                if image_to_process:
-                    st.image(image_to_process, caption=f"Selected Frame: {frame_number}", use_column_width=True)
-                    if st.button("Analyze Video Frame", key="analyze_video"):
-                        clear_results()
-                        st.session_state.selected_image = image_to_process
+                    
+                    image_to_process, _, _ = extract_frame_from_video(uploaded_video, frame_number)
+                    
+                    if image_to_process:
+                        st.image(image_to_process, caption=f"Selected Frame: {frame_number}", use_column_width=True)
+                        if st.button("Analyze Video Frame", key="analyze_video"):
+                            clear_results()
+                            st.session_state.selected_image = image_to_process
+                else:
+                    st.warning("Could not read frames from the uploaded video.")
 
     if 'selected_image' in st.session_state and 'result_image' not in st.session_state:
         with st.spinner("Analyzing image... Please wait."):
@@ -197,7 +226,7 @@ def main():
     with col2:
         st.header("2. Detection Result")
         if 'result_image' in st.session_state:
-            st.image(st.session_state.result_image, caption="Image with Detections", use_column_width=True)
+            st.image(st.session_state.result_image, caption="Image with Detections")
             
             detections = st.session_state.get('detections', [])
             if detections:
