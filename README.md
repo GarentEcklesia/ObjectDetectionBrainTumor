@@ -27,7 +27,6 @@ This application has been deployed using Streamlit Cloud and can be accessed her
     git clone https://github.com/GarentEcklesia/ObjectDetectionBrainTumor
     cd ObjectDetectionBrainTumor
     ```
-    *(Note: Replace `GarentEcklesia` with your actual GitHub username if it's different)*
 
 2.  **Install dependencies:**
     ```bash
