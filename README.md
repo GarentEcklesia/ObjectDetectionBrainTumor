@@ -1,31 +1,72 @@
-# ObjectDetectionBrainTumor
-Projek ini merupakan Model Deployment YOLO11 untuk object detection yang dilatih dengan data Brain Tumor.
+# 🧠 Object Detection - Brain Tumor
 
-Proyek ini merupakan implementasi Computer Vision untuk bidang medis dengan menggunakan YOLOv11 (You Only Look Once).
-Model ini dilatih pada dataset citra medis Brain Tumor MRI untuk mendeteksi dan mengklasifikasikan jenis tumor otak.
+This is a Computer Vision project for the medical field using **YOLOv8**. The model is trained on a Brain Tumor MRI medical image dataset to detect and classify types of brain tumors in *real-time*.
 
-Aplikasi ini menampilkan:
-1. Prediksi bounding box tumor pada gambar MRI.
-2. Jenis tumor yang terdeteksi beserta tingkat confidence score.
-3. Visualisasi interaktif berbasis Streamlit untuk upload gambar, video, maupun penggunaan contoh data.
+This application displays the predicted *bounding box* of the tumor on an MRI image, the detected tumor type, and its *confidence score*.
 
-⚠️ Disclaimer: Aplikasi ini hanya untuk keperluan penelitian/edukasi, bukan alat diagnosis medis. Untuk diagnosis yang valid, selalu konsultasikan dengan tenaga medis profesional.
+## 🚀 Live Demo
 
-Kelas Tumor yang Dideteksi
-1. Glioma: Tumor ganas yang tumbuh dari jaringan pendukung (sel glial) di dalam otak. Cenderung menyusup ke jaringan normal di sekitarnya.
-2. Meningioma: Tumor yang tumbuh pada selaput (meninges) yang melapisi otak. Umumnya bersifat jinak (bukan kanker) dan tumbuh lambat.
-3. Pituitary Tumor: Pertumbuhan sel abnormal pada kelenjar pituitari, sebuah kelenjar di dasar otak yang mengatur hormon penting tubuh.
-4. No Tumor: Menandakan bahwa model tidak mendeteksi adanya massa tumor signifikan pada citra medis.
+This application has been deployed using Streamlit Cloud and can be accessed here:
 
-Fitur Aplikasi
-1. Upload Gambar: Mengunggah citra MRI otak untuk analisis.
-2. Contoh Data: Menggunakan sampel gambar tumor (Glioma, Meningioma, Pituitary, No Tumor).
-3. Upload Video: Mendukung analisis frame per frame untuk video.
-4. Confidence Threshold: Atur ambang batas prediksi model.
-5. Visualisasi Bounding Box: Hasil deteksi ditampilkan langsung di atas citra MRI.
+[**➡️ Click here to launch the Streamlit App**](https://objectdetectionbraintumor-garent-ecklesia.streamlit.app/)
 
-Aplikasi ini sudah dideploy menggunakan Streamlit Cloud dan bisa diakses di sini: https://objectdetectionbraintumor-garent-ecklesia.streamlit.app/
+## 💡 Application Features
 
-Preview Website
+* **Image Upload:** Upload brain MRI images for analysis.
+* **Sample Data:** Use sample tumor images (Glioma, Meningioma, Pituitary, No Tumor).
+* **Video Upload:** Supports frame-by-frame analysis for videos (up to 30 seconds).
+* **Real-time Webcam:** Analyze using a live camera feed.
+* **Confidence Threshold:** Allows the user to set the model's prediction confidence threshold.
+* **Bounding Box Visualization:** Detection results are displayed directly on the MRI image.
+* **Downloadable Output:** Detection results can be downloaded as an image (.jpg) and a CSV file.
 
-<img width="1919" height="906" alt="image" src="https://github.com/user-attachments/assets/c06a617e-18e8-4bf8-90de-9c488643305e" />
+## 🛠️ How to Run Locally
+
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/GarentEcklesia/ObjectDetectionBrainTumor.git](https://github.com/GarentEcklesia/ObjectDetectionBrainTumor.git)
+    cd ObjectDetectionBrainTumor
+    ```
+    *(Note: Replace `GarentEcklesia` with your actual GitHub username if it's different)*
+
+2.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  **Run the Streamlit app:**
+    ```bash
+    streamlit run app.py
+    ```
+
+## 🎯 Detected Tumor Classes
+
+* **Glioma:** A malignant tumor that grows from the supportive tissue (glial cells) within the brain.
+* **Meningioma:** A tumor that grows on the membranes (meninges) that line the brain (generally benign).
+* **Pituitary Tumor:** An abnormal cell growth in the pituitary gland at the base of the brain.
+* **No Tumor:** Indicates that the model did not detect any significant tumor mass.
+
+## ⚙️ Tech Stack
+
+* **Model Architecture:** YOLOv8 (Ultralytics)
+* **Web Framework:** Streamlit
+* **Image & Video Processing:** OpenCV, Pillow (PIL)
+* **Data Handling & Analysis:** NumPy, Pandas
+* **Deployment Platform:** Streamlit Cloud
+* **Model Format:** PyTorch (.pt)
+
+## 🧠 Model Details
+
+* **Model:** YOLOv8 (custom trained on brain tumor MRI dataset with bounding boxes).
+* **Dataset:** [Brain Tumor MRI Dataset (with Bounding Boxes)](https://www.kaggle.com/datasets/ahmedsorour1/mri-for-brain-tumor-with-bounding-boxes)
+* **Metrics:**
+    * **mAP@0.5:** ~ 95.8%
+    * **mAP@0.5-0.95:** ~ 79.2%
+    * **Recall:** ~ 91.9%
+
+## 📬 Contact
+
+Garent Ecklesia - [garentecklesia45678@gmail.com](mailto:garentecklesia45678@gmail.com)
+
+## 📝 License
+This project is open-source and free to use for educational and research purposes.
