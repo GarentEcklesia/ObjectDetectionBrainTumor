@@ -24,7 +24,7 @@ This application has been deployed using Streamlit Cloud and can be accessed her
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/GarentEcklesia/ObjectDetectionBrainTumor.git](https://github.com/GarentEcklesia/ObjectDetectionBrainTumor.git)
+    git clone https://github.com/GarentEcklesia/ObjectDetectionBrainTumor
     cd ObjectDetectionBrainTumor
     ```
     *(Note: Replace `GarentEcklesia` with your actual GitHub username if it's different)*
